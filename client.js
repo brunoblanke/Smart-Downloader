@@ -14,7 +14,7 @@ function temaEscuro(t) {
 
 function abrirModal(t) {
   return t.modal({
-    url: "./baixar.html?v=6",
+    url: "./baixar.html?v=7",
     height: 340,
     accentColor: temaEscuro(t) ? "#22272b" : "#ffffff"
   });
