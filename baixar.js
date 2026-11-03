@@ -3,12 +3,44 @@ const t = TrelloPowerUp.iframe({ appKey: APP_KEY, appName: APP_NAME });
 const api = t.getRestApi();
 const statusEl = document.getElementById("status");
 const botao = document.getElementById("baixar");
+const barra = document.getElementById("barra");
+const progresso = document.getElementById("progresso");
 
 // ================================================================================================================================================================================================================================================
 // setStatus
 
-function setStatus(msg) {
+function setStatus(msg, tipo) {
   statusEl.textContent = msg;
+  statusEl.className = tipo || "";
+}
+
+// ================================================================================================================================================================================================================================================
+// setProgresso
+
+function setProgresso(fracao) {
+  barra.classList.toggle("ativa", fracao !== null);
+  progresso.style.width = `${Math.round((fracao || 0) * 100)}%`;
+}
+
+// ================================================================================================================================================================================================================================================
+// aplicarTema
+
+function aplicarTema() {
+  const contexto = t.getContext() || {};
+  if (contexto.theme === "dark" || contexto.theme === "light") {
+    document.documentElement.dataset.theme = contexto.theme;
+  }
+}
+
+// ================================================================================================================================================================================================================================================
+// mostrarNomeCard
+
+async function mostrarNomeCard() {
+  try {
+    const card = await t.card("name");
+    document.getElementById("card").textContent = card.name;
+  } catch (e) {
+  }
 }
 
 // ================================================================================================================================================================================================================================================
@@ -75,13 +107,15 @@ function salvarBlob(blob, nome) {
 
 async function baixarTudo() {
   botao.disabled = true;
+  setProgresso(0);
   try {
     const token = await obterToken();
     const card = await t.card("id", "name");
     setStatus("Listando anexos...");
     const anexos = (await listarAnexos(card.id, token)).filter(a => a.isUpload);
     if (!anexos.length) {
-      setStatus("Nenhum arquivo anexado neste card.");
+      setStatus("Nenhum arquivo anexado neste card.", "erro");
+      setProgresso(null);
       return;
     }
     const zip = new JSZip();
@@ -94,16 +128,21 @@ async function baixarTudo() {
       } catch (e) {
         falhas++;
       }
+      setProgresso((i + 1) / anexos.length);
     }
     setStatus("Gerando ZIP...");
     const blob = await zip.generateAsync({ type: "blob" });
     salvarBlob(blob, `${nomeSeguro(card.name, new Set())}.zip`);
-    setStatus(falhas ? `Concluído, mas ${falhas} arquivo(s) falharam.` : "Concluído!");
+    const ok = anexos.length - falhas;
+    setStatus(falhas ? `${ok} de ${anexos.length} arquivo(s) baixados. ${falhas} falharam.` : `Pronto! ${ok} arquivo(s) baixados.`, falhas ? "erro" : "sucesso");
   } catch (e) {
-    setStatus(`Erro: ${e.message}`);
+    setStatus(`Erro: ${e.message}`, "erro");
+    setProgresso(null);
   } finally {
     botao.disabled = false;
   }
 }
 
+aplicarTema();
+mostrarNomeCard();
 botao.addEventListener("click", baixarTudo);

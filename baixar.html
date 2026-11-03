@@ -1,21 +1,144 @@
 <!-- baixar.html -->
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
   <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      body { font-family: -apple-system, Segoe UI, Roboto, sans-serif; margin: 16px; color: #172b4d; }
-      button { background: #0c66e4; color: #fff; border: 0; border-radius: 4px; padding: 10px 16px; font-size: 14px; cursor: pointer; }
-      button:disabled { opacity: .5; cursor: default; }
-      #status { margin-top: 12px; font-size: 13px; }
+      :root {
+        --bg: #ffffff;
+        --texto: #172b4d;
+        --suave: #626f86;
+        --borda: #dcdfe4;
+        --trilho: #e9ebee;
+        --primaria: #0c66e4;
+        --primaria-hover: #0055cc;
+        --sucesso: #1f845a;
+        --erro: #c9372c;
+        --icone-bg: #e9f2ff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme="light"]) {
+          --bg: #22272b;
+          --texto: #dee4ea;
+          --suave: #9fadbc;
+          --borda: #38414a;
+          --trilho: #38414a;
+          --primaria: #579dff;
+          --primaria-hover: #85b8ff;
+          --sucesso: #4bce97;
+          --erro: #f87168;
+          --icone-bg: #1c2b41;
+        }
+      }
+      :root[data-theme="dark"] {
+        --bg: #22272b;
+        --texto: #dee4ea;
+        --suave: #9fadbc;
+        --borda: #38414a;
+        --trilho: #38414a;
+        --primaria: #579dff;
+        --primaria-hover: #85b8ff;
+        --sucesso: #4bce97;
+        --erro: #f87168;
+        --icone-bg: #1c2b41;
+      }
+      * { box-sizing: border-box; }
+      html, body { height: 100%; margin: 0; }
+      body {
+        background: var(--bg);
+        color: var(--texto);
+        font-family: -apple-system, "Segoe UI", Roboto, "Noto Sans", Ubuntu, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px 16px;
+      }
+      .painel {
+        width: 100%;
+        max-width: 420px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 14px;
+      }
+      .icone {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--icone-bg);
+        color: var(--primaria);
+        display: grid;
+        place-items: center;
+      }
+      h1 { font-size: 18px; font-weight: 600; margin: 0; }
+      #card {
+        font-size: 14px;
+        color: var(--suave);
+        margin: -6px 0 4px;
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      button {
+        background: var(--primaria);
+        color: var(--bg);
+        border: 0;
+        border-radius: 6px;
+        padding: 12px 22px;
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        transition: background .15s;
+      }
+      button:hover:not(:disabled) { background: var(--primaria-hover); }
+      button:disabled { opacity: .6; cursor: default; }
+      .barra {
+        width: 100%;
+        height: 6px;
+        border-radius: 3px;
+        background: var(--trilho);
+        overflow: hidden;
+        visibility: hidden;
+      }
+      .barra.ativa { visibility: visible; }
+      #progresso {
+        height: 100%;
+        width: 0;
+        background: var(--primaria);
+        transition: width .2s;
+      }
+      #status {
+        font-size: 14px;
+        line-height: 1.4;
+        color: var(--suave);
+        min-height: 20px;
+        max-width: 100%;
+        overflow-wrap: anywhere;
+      }
+      #status.sucesso { color: var(--sucesso); font-weight: 600; }
+      #status.erro { color: var(--erro); font-weight: 600; }
     </style>
     <script src="https://p.trellocdn.com/power-up.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="./config.js?v=2"></script>
+    <script src="./config.js?v=3"></script>
   </head>
   <body>
-    <button id="baixar">Baixar todos os anexos (.zip)</button>
-    <div id="status"></div>
-    <script src="./baixar.js?v=2"></script>
+    <main class="painel">
+      <div class="icone">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg>
+      </div>
+      <h1>Baixar anexos do card</h1>
+      <div id="card">&nbsp;</div>
+      <button id="baixar">Baixar tudo em .zip</button>
+      <div class="barra" id="barra"><div id="progresso"></div></div>
+      <div id="status">Todos os arquivos anexados serão baixados em um único ZIP.</div>
+    </main>
+    <script src="./baixar.js?v=3"></script>
   </body>
 </html>

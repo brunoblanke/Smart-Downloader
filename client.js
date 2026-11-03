@@ -6,8 +6,7 @@
 function abrirModal(t) {
   return t.modal({
     url: "./baixar.html",
-    title: "Baixar todos os anexos",
-    height: 200
+    height: 340
   });
 }
 
@@ -15,7 +14,6 @@ function abrirModal(t) {
 // botoesDoCard
 
 function botoesDoCard(t) {
-  console.log("[Smart Downloader] card-buttons solicitado pelo Trello");
   return [{
     icon: new URL("./icon.svg", window.location.href).href,
     text: "Baixar tudo",
@@ -23,8 +21,6 @@ function botoesDoCard(t) {
     condition: "always"
   }];
 }
-
-console.log("[Smart Downloader] conector carregado");
 
 TrelloPowerUp.initialize(
   { "card-buttons": botoesDoCard },
