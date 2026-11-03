@@ -70,8 +70,10 @@ async function baixarAnexo(idCard, anexo, token) {
   const resp = await fetch(`https://api.trello.com/1/cards/${idCard}/attachments/${anexo.id}/download/${nome}`, {
     headers: { Authorization: `OAuth oauth_consumer_key="${APP_KEY}", oauth_token="${token}"` }
   });
-  if (!resp.ok) throw new Error(`${resp.status}`);
-  return resp.blob();
+  if (!resp.ok) throw new Error(`HTTP ${resp.status} ${(await resp.text()).slice(0, 120)}`);
+  const blob = await resp.blob();
+  if (!blob.size) throw new Error("arquivo vazio");
+  return blob;
 }
 
 // ================================================================================================================================================================================================================================================
@@ -121,20 +123,27 @@ async function baixarTudo() {
     const zip = new JSZip();
     const usados = new Set();
     let falhas = 0;
+    let primeiroErro = "";
     for (const [i, anexo] of anexos.entries()) {
       setStatus(`Baixando ${i + 1}/${anexos.length}: ${anexo.name}`);
       try {
         zip.file(nomeSeguro(anexo.fileName || anexo.name, usados), await baixarAnexo(card.id, anexo, token));
       } catch (e) {
         falhas++;
+        primeiroErro = primeiroErro || `${anexo.name}: ${e.message}`;
+        console.error("[Smart Downloader]", anexo.name, e);
       }
       setProgresso((i + 1) / anexos.length);
+    }
+    if (falhas === anexos.length) {
+      setStatus(`Nenhum arquivo pôde ser baixado. ${primeiroErro}`, "erro");
+      return;
     }
     setStatus("Gerando ZIP...");
     const blob = await zip.generateAsync({ type: "blob" });
     salvarBlob(blob, `${nomeSeguro(card.name, new Set())}.zip`);
     const ok = anexos.length - falhas;
-    setStatus(falhas ? `${ok} de ${anexos.length} arquivo(s) baixados. ${falhas} falharam.` : `Pronto! ${ok} arquivo(s) baixados.`, falhas ? "erro" : "sucesso");
+    setStatus(falhas ? `${ok} de ${anexos.length} arquivo(s) baixados. ${falhas} falharam. ${primeiroErro}` : `Pronto! ${ok} arquivo(s) baixados.`, falhas ? "erro" : "sucesso");
   } catch (e) {
     setStatus(`Erro: ${e.message}`, "erro");
     setProgresso(null);
