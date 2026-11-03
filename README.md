@@ -18,6 +18,12 @@ https://brunoblanke.github.io/Smart-Downloader/
 4. Aba **Chave de API:** gere a key, cole em `config.js` e adicione `https://brunoblanke.github.io` em **Origens permitidas**.
 5. No board: **Power-Ups → Personalizado → Smart Downloader → Adicionar**.
 
+## Como usar
+
+1. Abra o card.
+2. Na barra inferior, clique em **Power-ups → Baixar tudo**.
+3. Clique em **Baixar tudo em .zip** (na primeira vez, autorize o app).
+
 ## Arquivos
 
 | Arquivo | Função |
