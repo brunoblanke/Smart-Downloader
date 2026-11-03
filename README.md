@@ -32,3 +32,13 @@ https://brunoblanke.github.io/Smart-Downloader/
 | `baixar.html` / `baixar.js` | Modal: autoriza, baixa os anexos e gera o ZIP |
 | `config.js` | API Key e nome do app |
 | `icon.svg` | Ícone do botão |
+
+## Proxy (Cloudflare Worker)
+
+O Trello não libera o download dos arquivos direto pelo navegador (CORS), então os downloads passam por um Worker gratuito da Cloudflare.
+
+1. Em https://dash.cloudflare.com, abra **Workers & Pages → Create → Create Worker**, dê o nome `smart-downloader` e clique em **Deploy**.
+2. Clique em **Edit code**, substitua tudo pelo conteúdo de `cloudflare-worker/worker.js` e clique em **Deploy**.
+3. Copie a URL do Worker (ex.: `https://smart-downloader.SEU-USUARIO.workers.dev`) e coloque em `PROXY_URL` no `config.js`.
+
+O Worker só aceita pedidos vindos de `https://brunoblanke.github.io` e só repassa caminhos de download de anexos do Trello.

@@ -67,7 +67,8 @@ async function listarAnexos(idCard, token) {
 
 async function baixarAnexo(idCard, anexo, token) {
   const nome = encodeURIComponent(anexo.fileName || anexo.name);
-  const resp = await fetch(`https://api.trello.com/1/cards/${idCard}/attachments/${anexo.id}/download/${nome}`, {
+  const base = PROXY_URL || "https://api.trello.com";
+  const resp = await fetch(`${base.replace(/\/$/, "")}/1/cards/${idCard}/attachments/${anexo.id}/download/${nome}`, {
     headers: { Authorization: `OAuth oauth_consumer_key="${APP_KEY}", oauth_token="${token}"` }
   });
   if (!resp.ok) throw new Error(`HTTP ${resp.status} ${(await resp.text()).slice(0, 120)}`);
