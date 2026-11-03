@@ -5,7 +5,7 @@
 
 function abrirModal(t) {
   return t.modal({
-    url: "./baixar.html",
+    url: "./baixar.html?v=4",
     height: 340
   });
 }
