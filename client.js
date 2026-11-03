@@ -15,12 +15,16 @@ function abrirModal(t) {
 // botoesDoCard
 
 function botoesDoCard(t) {
+  console.log("[Smart Downloader] card-buttons solicitado pelo Trello");
   return [{
     icon: new URL("./icon.svg", window.location.href).href,
     text: "Baixar tudo",
-    callback: abrirModal
+    callback: abrirModal,
+    condition: "always"
   }];
 }
+
+console.log("[Smart Downloader] conector carregado");
 
 TrelloPowerUp.initialize(
   { "card-buttons": botoesDoCard },
