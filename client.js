@@ -5,9 +5,9 @@
 
 function abrirModal(t) {
   return t.modal({
-    url: "./baixar.html?v=8",
+    url: "./baixar.html?v=9",
     height: 340,
-    accentColor: "#22272b"
+    accentColor: "#161a1d"
   });
 }
 
